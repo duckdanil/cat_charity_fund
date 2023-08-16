@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.crud.charity_project import charity_project_crud
 from app.models import CharityProject
 
+
 async def check_name_duplicate(project_name: str, session: AsyncSession) -> None:
     """Проверка отсутствия проекта с таким именем."""
     project_id = await charity_project_crud.get_project_id_by_name(project_name, session)
@@ -11,6 +12,7 @@ async def check_name_duplicate(project_name: str, session: AsyncSession) -> None
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Проект с таким именем уже существует!"
         )
+
 
 async def check_charity_project_exists(project_id: int, session: AsyncSession) -> CharityProject:
     """Проверка существования проекта по его id."""
@@ -22,6 +24,7 @@ async def check_charity_project_exists(project_id: int, session: AsyncSession) -
         )
     return project
 
+
 def check_charity_project_invested_sum(project: CharityProject, new_amount: int):
     """Проверка доступности целевой суммы в рамках уже существующих пожертвований."""
     if project.invested_amount > new_amount:
@@ -30,6 +33,7 @@ def check_charity_project_invested_sum(project: CharityProject, new_amount: int)
             detail="Целевая сумма должна быть больше уже пожертвованной!"
         )
 
+
 def check_charity_project_already_invested(charity_project: CharityProject):
     """Проверка наличия пожертвований в проект."""
     if charity_project.invested_amount > 0:
@@ -37,6 +41,7 @@ def check_charity_project_already_invested(charity_project: CharityProject):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="В проект были внесены средства, не подлежит удалению!"
         )
+
 
 def check_charity_project_closed(charity_project: CharityProject):
     """Проверка того, закрыт ли проект."""
