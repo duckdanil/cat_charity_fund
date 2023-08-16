@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     secret: str = 'SECRET'
     first_superuser_email: Optional[EmailStr] = None
     first_superuser_password: Optional[str] = None
+    jwt_token_lifetime_seconds: int = 3600
 
     class Config:
         env_file = '.env'

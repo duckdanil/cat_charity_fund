@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.validators import (
@@ -37,9 +37,9 @@ async def create_charity_project(
     """[Только для Админа] Создать благотворительный проект."""
 
     await check_name_duplicate(charity_project.name, session)
-    await charity_project_crud.get_project_id_by_name(
-        charity_project.name, session
-    )
+    existing_project = await charity_project_crud.get_project_id_by_name(charity_project.name, session)
+    if existing_project:
+        raise HTTPException(status_code=409, detail="Проект с таким именем уже существует")
 
     project = await charity_project_crud.create(charity_project, session)
 
